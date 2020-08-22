@@ -5,7 +5,7 @@ block_size = 60
 
 
 def load_level():
-    file = "../wumpus/Data/map1.txt"
+    file = "./Data/map1.txt"
     with open(file) as f:
         size = int(f.readline())
         cave = [[room for room in row.strip().split('.')]
@@ -39,29 +39,29 @@ class Game(Frame):
                                  block_size // 2 + block_size * 10, block_size // 2 + r * block_size) for r in range(11)]
         # game name
         c = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_c.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
+            './Img/letter_c.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
         e = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_e.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
+            './Img/letter_e.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
         h = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_h.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
+            './Img/letter_h.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
         m = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_m.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
+            './Img/letter_m.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
         n = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_n.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
+            './Img/letter_n.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
         o = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_o.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
+            './Img/letter_o.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
         p = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_p.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
+            './Img/letter_p.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
         r = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_r.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
+            './Img/letter_r.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
         s = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_s.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
+            './Img/letter_s.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
         t = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_t.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
+            './Img/letter_t.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
         u = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_u.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
+            './Img/letter_u.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
         w = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_w.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
+            './Img/letter_w.jpg').resize((block_size * 3 // 5, block_size * 3 // 5), Image.ANTIALIAS))
 
         switcher = {'c': c, 'e': e, 'h': h, 'm': m, 'n': n, 'o': o, 'p': p,
                     'r': r, 's': s, 't': t, 'u': u, 'w': w}
