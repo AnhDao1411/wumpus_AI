@@ -33,7 +33,8 @@ def load_level():
 
 
 class Agent:
-    def __init__(self, window, pos):
+    def __init__(self, window, pos, size):
+        self.limit = size
         self.window = window
         self.up1 = ImageTk.PhotoImage(Image.open(
             '../wumpus/Img/up1.png').resize((room_size - 3, room_size - 3), Image.ANTIALIAS))
@@ -82,31 +83,42 @@ class Agent:
         if event.keysym == 'w':  # up
             if self.dirc != 'u':
                 self.dirc = 'u'
-                return self.move(self.up1)
+                return self.move(self.up1, self.row, self.col)
             else:
                 if self.cur == self.up1:  # if already facing up
-                    return self.move(self.up2)
-                return self.move(self.up1)
+                    return self.move(self.up2, self.row - 1, self.col)
+                return self.move(self.up1, self.row - 1, self.col)
         elif event.keysym == 's':  # down
             if self.dirc != 'd':
                 self.dirc = 'd'
-                return self.move(self.down1)
+                return self.move(self.down1, self.row, self.col)
             else:
                 if self.cur == self.down1:  # if already facing down
-                    return self.move(self.down2)
-                return self.move(self.down1)
+                    return self.move(self.down2, self.row + 1, self.col)
+                return self.move(self.down1, self.row + 1, self.col)
         elif event.keysym == 'a':  # left
             if self.dirc != 'l':
                 self.dirc = 'l'
-            return self.move(self.left)
+                return self.move(self.left, self.row, self.col)
+            return self.move(self.left, self.row, self.col - 1)
         elif event.keysym == 'd':  # right
             if self.dirc != 'r':
                 self.dirc = 'r'
-            return self.move(self.right)
+                return self.move(self.right, self.row, self.col)
+            return self.move(self.right, self.row, self.col + 1)
 
-    def move(self, img):
+    def move(self, img, row, col):
         self.window.delete(self.img)
         self.cur = img
+
+        if -1 < row < self.limit and -1 < col < self.limit:
+            if row != self.row or col != self.col:
+                self.row = row
+                self.col = col
+                self.window.create_image(room_size // 2 + room_size * self.col + 1,
+                                         room_size // 2 + room_size * self.row + 1,
+                                         anchor=NW, image=self.step)
+
         self.img = self.window.create_image(room_size // 2 + room_size * self.col + 1,
                                             room_size // 2 + room_size * self.row + 1,
                                             anchor=NW, image=self.cur)
@@ -251,7 +263,7 @@ class Game(Frame):
             arr_img[-1].place(x=room_size * 12 + img_size * i,
                               y=room_size * 2)
 # Variable
-        self.agent = Agent(self.window, ag)
+        self.agent = Agent(self.window, ag, self.size)
         self.wumpus = [Wumpus(self.window, wp) for wp in wum]
         self.pit = [Pit(self.window, p) for p in pit]
         self.bree = [Breeze(self.window, b) for b in bree]
@@ -285,7 +297,14 @@ class Game(Frame):
     # click reset button
 
     def reset(self):
-        pass
+        self.window.delete('all')
+        # Columns table
+        [self.window.create_line(room_size // 2 + c * room_size, room_size // 2,
+                                 room_size // 2 + c * room_size, room_size // 2 + room_size * 10) for c in range(self.size + 1)]
+        # Rows table
+        [self.window.create_line(room_size // 2, room_size // 2 + r * room_size,
+                                 room_size // 2 + room_size * 10, room_size // 2 + r * room_size) for r in range(self.size + 1)]
+        self.play()
 
 
 load_level()
