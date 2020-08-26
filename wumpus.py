@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 from PIL import Image, ImageTk
 room_size = 60
 img_size = room_size // 5 * 3
@@ -15,11 +16,9 @@ def load_level():
         pit = [(r, c) for r, row in enumerate(cave)
                for c, room in enumerate(row) if room == 'P']
         briz = [(r, c) for r, row in enumerate(cave)
-                for c, room in enumerate(row) if room == 'B']
+                for c, room in enumerate(row) if room == 'B' or room == 'BS']
         sten = [(r, c) for r, row in enumerate(cave)
-                for c, room in enumerate(row) if room == 'S']
-        bri_ste = [(r, c) for r, row in enumerate(cave)
-                   for c, room in enumerate(row) if room == 'BS']
+                for c, room in enumerate(row) if room == 'S' or room == 'BS']
         gold = [(r, c) for r, row in enumerate(cave)
                 for c, room in enumerate(row) if room == 'G']
         agent = [(r, c) for r, row in enumerate(cave)
@@ -29,7 +28,7 @@ def load_level():
     for r in cave:
         if len(r) != size:
             raise Exception('Not enough Col')
-    return size, cave, wum, pit, briz, sten, bri_ste, gold, agent
+    return size, cave, wum, pit, briz, sten, gold, agent
 
 
 class Wumpus:
@@ -38,6 +37,8 @@ class Wumpus:
         self.img = ImageTk.PhotoImage(Image.open(
             '../wumpus/Img/wumpus.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
+        self.signal = [(self.row - 1, self.col), (self.row + 1, self.col),
+                       (self.row, self.col - 1), (self.row, self.col + 1)]
 
     def display(self, window):
         window.create_image(room_size // 2 + room_size * self.col + 1,
@@ -46,10 +47,19 @@ class Wumpus:
 
     def appear(self, window, row, col):
         if row == self.row and col == self.col:
-            window.create_image(room_size // 2 + room_size * self.col + 1,
-                                room_size // 2 + room_size * self.row + 1,
-                                anchor=NW, image=self.img)
+            self.display(window)
             return True
+        return False
+
+    def delete(self, row, col):
+        if row == self.row and col == self.col:
+            return True
+        return False
+
+    def same_sig(self, coor):
+        for s in self.signal:
+            if coor == s:
+                return True
         return False
 
 
@@ -59,6 +69,8 @@ class Pit:
         self.img = ImageTk.PhotoImage(Image.open(
             '../wumpus/Img/hole.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
+        self.signal = [(self.row - 1, self.col), (self.row + 1, self.col),
+                       (self.row, self.col - 1), (self.row, self.col + 1)]
 
     def display(self, window):
         window.create_image(room_size // 2 + room_size * self.col + 1,
@@ -67,9 +79,7 @@ class Pit:
 
     def appear(self, window, row, col):
         if row == self.row and col == self.col:
-            window.create_image(room_size // 2 + room_size * self.col + 1,
-                                room_size // 2 + room_size * self.row + 1,
-                                anchor=NW, image=self.img)
+            self.display(window)
             return True
         return False
 
@@ -88,9 +98,7 @@ class Stence:
 
     def appear(self, window, row, col):
         if row == self.row and col == self.col:
-            window.create_image(room_size // 2 + room_size * self.col + 1,
-                                room_size // 2 + room_size * self.row + 1,
-                                anchor=NW, image=self.img)
+            self.display(window)
             return True
         return False
 
@@ -102,16 +110,14 @@ class Gold:
             '../wumpus/Img/gold.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
 
-    def appear(self, window):
+    def display(self, window):
         window.create_image(room_size // 2 + room_size * self.col + 1,
                             room_size // 2 + room_size * self.row + 1,
                             anchor=NW, image=self.img)
 
     def appear(self, window, row, col):
         if row == self.row and col == self.col:
-            window.create_image(room_size // 2 + room_size * self.col + 1,
-                                room_size // 2 + room_size * self.row + 1,
-                                anchor=NW, image=self.img)
+            self.display(window)
             return True
         return False
 
@@ -130,30 +136,7 @@ class Breeze:
 
     def appear(self, window, row, col):
         if row == self.row and col == self.col:
-            window.create_image(room_size // 2 + room_size * self.col + 1,
-                                room_size // 2 + room_size * self.row + 1,
-                                anchor=NW, image=self.img)
-            return True
-        return False
-
-
-class Briste:
-    def __init__(self, window, pos):
-        self.row, self.col = pos
-        self.img = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/mix.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
-        window.image += [self.img]
-
-    def display(self, window):
-        window.create_image(room_size // 2 + room_size * self.col + 1,
-                            room_size // 2 + room_size * self.row + 1,
-                            anchor=NW, image=self.img)
-
-    def appear(self, window, row, col):
-        if row == self.row and col == self.col:
-            window.create_image(room_size // 2 + room_size * self.col + 1,
-                                room_size // 2 + room_size * self.row + 1,
-                                anchor=NW, image=self.img)
+            self.display(window)
             return True
         return False
 
@@ -175,6 +158,7 @@ class Agent:
         self.right = ImageTk.PhotoImage(Image.open(
             '../wumpus/Img/right.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         self.row, self.col = pos
+        self.row_og, self.col_og = self.row, self.col
     # direction (Up, Down, Left, Right)
         self.dirc = 'r'
         # current image
@@ -233,6 +217,9 @@ class Agent:
                                             room_size // 2 + room_size * self.row + 1,
                                             anchor=NW, image=self.cur)
 
+    def shoot(self):
+        return self.dirc
+
 
 class Game(Frame):
     def __init__(self, master=None):
@@ -264,12 +251,12 @@ class Game(Frame):
             '../wumpus/Img/step.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
 # ------------------------------
         Frame.__init__(self, master)
-        self.size, self.cave, wum, pit, bree, sten, briste, gold, ag = load_level()
+        self.size, self.cave, wum, pit, bree, sten, gold, ag = load_level()
         self.master = master
         self.master.resizable(width=False, height=False)
         self.master.title('Wumpus')
         self.window = Canvas(self.master, width=room_size * 16,
-                             height=room_size * 11, bg='#a6b37e')
+                             height=room_size * 11, bg='#bea998')
         self.window.image = []
         # Columns table
         [self.window.create_line(room_size // 2 + c * room_size, room_size // 2,
@@ -302,8 +289,10 @@ class Game(Frame):
         self.pit = [Pit(self.window, p) for p in pit]
         self.bree = [Breeze(self.window, b) for b in bree]
         self.sten = [Stence(self.window, s) for s in sten]
-        self.briste = [Briste(self.window, s) for s in briste]
         self.gold = [Gold(self.window, g) for g in gold]
+        self.point = 0
+        self.t_point = self.window.create_text(
+            room_size * 13 + img_size, room_size * 2 + img_size * 2, anchor='center', font=('Purisa', 40), text=str(0))
 # Button
         play_but = Button(self.master, width=20,
                           text='Play', command=self.play)
@@ -319,13 +308,28 @@ class Game(Frame):
 # end init
 
     def play(self):
+        self.agent.row, self.agent.col = self.agent.row_og, self.agent.col_og
+        self.point = 0
         self.path(self.agent.row, self.agent.col)
         self.agent.appear()
+        self.dis_point(0)
 
         self.kb_move()
 
     def reset(self):
-        pass
+        self.window.delete('all')
+        # Columns table
+        [self.window.create_line(room_size // 2 + c * room_size, room_size // 2,
+                                 room_size // 2 + c * room_size, room_size // 2 + room_size * 10) for c in range(self.size + 1)]
+        # Rows table
+        [self.window.create_line(room_size // 2, room_size // 2 + r * room_size,
+                                 room_size // 2 + room_size * 10, room_size // 2 + r * room_size) for r in range(self.size + 1)]
+
+    def dis_point(self, p):
+        self.window.delete(self.t_point)
+        self.point += p
+        self.t_point = self.window.create_text(
+            room_size * 13 + img_size, room_size * 2 + img_size * 2, anchor='center', font=('Purisa', 40), text=str(self.point))
 # movement
 
     def kb_move(self):
@@ -335,29 +339,43 @@ class Game(Frame):
         self.ev.bind('<a>', self.wasd)
         self.ev.bind('<s>', self.wasd)
         self.ev.bind('<d>', self.wasd)
+        self.ev.bind('<space>', self.wasd)
+        self.ev.bind('<Return>', self.wasd)
 
         self.ev.focus_set()
-        self.ev.bind('<1>', lambda event: ev.focus_set())
+        self.ev.bind('<Button-1>', lambda event: self.ev.focus_set())
+
+    def check_wum(self, row, col):
+        for i, w in enumerate(self.wumpus):
+            if w.delete(row, col):
+                w = self.wumpus.pop(i)
+                for s in w.signal:
+                    for wum in self.wumpus:
+                        if wum.same_sig(s):  # same stence
+                            break
+
+                return True
+        return False
 
     def check_step(self, row, col):
         for w in self.wumpus:
             if w.appear(self.window, row, col):
-                return
+                self.dis_point(-1000)
+                return True
         for p in self.pit:
             if p.appear(self.window, row, col):
-                return
+                self.dis_point(-1000)
+                return True
         for b in self.bree:
             if b.appear(self.window, row, col):
-                return
+                break
         for s in self.sten:
             if s.appear(self.window, row, col):
-                return
-        for bs in self.briste:
-            if bs.appear(self.window, row, col):
-                return
+                break
         for g in self.gold:
             if g.appear(self.window, row, col):
-                return
+                self.dis_point(100)
+                break
 
     def path(self, row, col):
         if -1 < row < self.size and -1 < col < self.size:
@@ -366,20 +384,44 @@ class Game(Frame):
                                      anchor=NW, image=self.step)
 
     def wasd(self, event):
+        end = False
+        # if event.keysym == 'space':
+        #     dr = self.agent.shoot()
+        #     if dr == 'u':  # up
+        #         if self.check_wum(self.agent.row - 1, self.agent.col):
+
+        #             self.path(self.agent.row - 1, self.agent.col)
+        #     elif dr == 'd':  # down
+        #         self.path(self.agent.row + 1, self.agent.col)
+        #     elif dr == 'l':  # left
+        #         self.path(self.agent.row, self.agent.col - 1)
+        #     elif dr == 'r':  # right
+        #         self.path(self.agent.row, self.agent.col + 1)
+
         if not self.agent.is_turn(event.keysym):  # walk into anther room
+            self.dis_point(-10)
             if event.keysym == 'w':  # up
                 self.path(self.agent.row - 1, self.agent.col)
-                self.check_step(self.agent.row - 1, self.agent.col)
+                end = self.check_step(self.agent.row - 1, self.agent.col)
             elif event.keysym == 's':  # down
                 self.path(self.agent.row + 1, self.agent.col)
-                self.check_step(self.agent.row + 1, self.agent.col)
+                end = self.check_step(self.agent.row + 1, self.agent.col)
             elif event.keysym == 'a':  # left
                 self.path(self.agent.row, self.agent.col - 1)
-                self.check_step(self.agent.row, self.agent.col - 1)
+                end = self.check_step(self.agent.row, self.agent.col - 1)
             elif event.keysym == 'd':  # right
                 self.path(self.agent.row, self.agent.col + 1)
-                self.check_step(self.agent.row, self.agent.col + 1)
+                end = self.check_step(self.agent.row, self.agent.col + 1)
         self.agent.direction(event.keysym)
+        if end:
+            messagebox.showerror('End Game', 'You Lost')
+            self.window.delete('all')
+            # Columns table
+            [self.window.create_line(room_size // 2 + c * room_size, room_size // 2,
+                                     room_size // 2 + c * room_size, room_size // 2 + room_size * 10) for c in range(self.size + 1)]
+            # Rows table
+            [self.window.create_line(room_size // 2, room_size // 2 + r * room_size,
+                                     room_size // 2 + room_size * 10, room_size // 2 + r * room_size) for r in range(self.size + 1)]
 
 
 load_level()
