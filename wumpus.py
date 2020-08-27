@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
+import time
 room_size = 60
 img_size = room_size // 5 * 3
 
@@ -12,15 +13,15 @@ def load_level():
         cave = [[room for room in row.strip().split('.')]
                 for row in f.readlines()]
         wum = [(r, c) for r, row in enumerate(cave)
-               for c, room in enumerate(row) if room == 'W']
+               for c, room in enumerate(row) if 'W' in room]
         pit = [(r, c) for r, row in enumerate(cave)
                for c, room in enumerate(row) if room == 'P']
         briz = [(r, c) for r, row in enumerate(cave)
-                for c, room in enumerate(row) if room == 'B' or room == 'BS']
+                for c, room in enumerate(row) if 'B' in room]
         sten = [(r, c) for r, row in enumerate(cave)
-                for c, room in enumerate(row) if room == 'S' or room == 'BS']
+                for c, room in enumerate(row) if 'S' in room]
         gold = [(r, c) for r, row in enumerate(cave)
-                for c, room in enumerate(row) if room == 'G']
+                for c, room in enumerate(row) if 'G' in room]
         agent = [(r, c) for r, row in enumerate(cave)
                  for c, room in enumerate(row) if room == 'A'][0]
     if len(cave) != size:
@@ -62,6 +63,11 @@ class Wumpus:
                 return True
         return False
 
+    def check(self, row, col):
+        if row == self.row and col == self.col:
+            return True
+        return False
+
 
 class Pit:
     def __init__(self, window, pos):
@@ -83,6 +89,11 @@ class Pit:
             return True
         return False
 
+    def check(self, row, col):
+        if row == self.row and col == self.col:
+            return True
+        return False
+
 
 class Stence:
     def __init__(self, window, pos):
@@ -90,15 +101,28 @@ class Stence:
         self.img = ImageTk.PhotoImage(Image.open(
             '../wumpus/Img/smoke.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
+        self.temp = None
 
     def display(self, window):
-        window.create_image(room_size // 2 + room_size * self.col + 1,
-                            room_size // 2 + room_size * self.row + 1,
-                            anchor=NW, image=self.img)
+        self.temp = window.create_image(room_size // 2 + room_size * self.col + 1,
+                                        room_size // 2 + room_size * self.row + 1,
+                                        anchor=NW, image=self.img)
 
     def appear(self, window, row, col):
         if row == self.row and col == self.col:
             self.display(window)
+            return True
+        return False
+
+    def delete(self, window, row, col):
+        if row == self.row and col == self.col:
+            window.delete(self.temp)
+            window.delete(self.img)
+            return True
+        return False
+
+    def check(self, row, col):
+        if row == self.row and col == self.col:
             return True
         return False
 
@@ -109,15 +133,28 @@ class Gold:
         self.img = ImageTk.PhotoImage(Image.open(
             '../wumpus/Img/gold.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
+        self.temp = None
 
     def display(self, window):
-        window.create_image(room_size // 2 + room_size * self.col + 1,
-                            room_size // 2 + room_size * self.row + 1,
-                            anchor=NW, image=self.img)
+        self.temp = window.create_image(room_size // 2 + room_size * self.col + 1,
+                                        room_size // 2 + room_size * self.row + 1,
+                                        anchor=NW, image=self.img)
 
     def appear(self, window, row, col):
         if row == self.row and col == self.col:
             self.display(window)
+            return True
+        return False
+
+    def delete(self, window, row, col):
+        if row == self.row and col == self.col:
+            window.delete(self.temp)
+            window.delete(self.img)
+            return True
+        return False
+
+    def check(self, row, col):
+        if row == self.row and col == self.col:
             return True
         return False
 
@@ -137,6 +174,11 @@ class Breeze:
     def appear(self, window, row, col):
         if row == self.row and col == self.col:
             self.display(window)
+            return True
+        return False
+
+    def check(self, row, col):
+        if row == self.row and col == self.col:
             return True
         return False
 
@@ -295,12 +337,12 @@ class Game(Frame):
             room_size * 13 + img_size, room_size * 2 + img_size * 2, anchor='center', font=('Purisa', 40), text=str(0))
 # Button
         play_but = Button(self.master, width=20,
-                          text='Play', command=self.play)
+                          text='Play as Human', command=self.play)
         play_but.place(x=room_size * 12, y=room_size * 6)
 
-        res_but = Button(self.master, width=20,
-                         text='Reset', command=self.reset)
-        res_but.place(x=room_size * 12, y=room_size * 6 + img_size)
+        auto_but = Button(self.master, width=20,
+                          text='Play as Machine', command=self.auto)
+        auto_but.place(x=room_size * 12, y=room_size * 7)
 
         # Dont know yet
         self.window.pack()
@@ -308,22 +350,16 @@ class Game(Frame):
 # end init
 
     def play(self):
-        self.agent.row, self.agent.col = self.agent.row_og, self.agent.col_og
-        self.point = 0
         self.path(self.agent.row, self.agent.col)
         self.agent.appear()
         self.dis_point(0)
 
         self.kb_move()
 
-    def reset(self):
-        self.window.delete('all')
-        # Columns table
-        [self.window.create_line(room_size // 2 + c * room_size, room_size // 2,
-                                 room_size // 2 + c * room_size, room_size // 2 + room_size * 10) for c in range(self.size + 1)]
-        # Rows table
-        [self.window.create_line(room_size // 2, room_size // 2 + r * room_size,
-                                 room_size // 2 + room_size * 10, room_size // 2 + r * room_size) for r in range(self.size + 1)]
+    def auto(self):
+        self.path(self.agent.row, self.agent.col)
+        self.agent.appear()
+        self.dis_point(0)
 
     def dis_point(self, p):
         self.window.delete(self.t_point)
@@ -347,15 +383,16 @@ class Game(Frame):
 
     def check_wum(self, row, col):
         for i, w in enumerate(self.wumpus):
-            if w.delete(row, col):
+            if w.delete(row, col):  # if kill wumpus
                 w = self.wumpus.pop(i)
-                for s in w.signal:
+                for s in w.signal:  # wumpus stench
                     for wum in self.wumpus:
                         if wum.same_sig(s):  # same stence
                             break
-
-                return True
-        return False
+                    else:  # if no other stench in the same place
+                        self.sten = [st for st in self.sten if not st.delete(
+                            self.window, s[0], s[1])]
+                return
 
     def check_step(self, row, col):
         for w in self.wumpus:
@@ -374,7 +411,6 @@ class Game(Frame):
                 break
         for g in self.gold:
             if g.appear(self.window, row, col):
-                self.dis_point(100)
                 break
 
     def path(self, row, col):
@@ -385,24 +421,29 @@ class Game(Frame):
 
     def wasd(self, event):
         end = False
-        # if event.keysym == 'space':
-        #     dr = self.agent.shoot()
-        #     if dr == 'u':  # up
-        #         if self.check_wum(self.agent.row - 1, self.agent.col):
-
-        #             self.path(self.agent.row - 1, self.agent.col)
-        #     elif dr == 'd':  # down
-        #         self.path(self.agent.row + 1, self.agent.col)
-        #     elif dr == 'l':  # left
-        #         self.path(self.agent.row, self.agent.col - 1)
-        #     elif dr == 'r':  # right
-        #         self.path(self.agent.row, self.agent.col + 1)
-
-        if not self.agent.is_turn(event.keysym):  # walk into anther room
+        if event.keysym == 'space':
+            dr = self.agent.shoot()
+            self.dis_point(-100)
+            if dr == 'u':  # up
+                self.check_wum(self.agent.row - 1, self.agent.col)
+            elif dr == 'd':  # down
+                self.check_wum(self.agent.row + 1, self.agent.col)
+            elif dr == 'l':  # left
+                self.check_wum(self.agent.row, self.agent.col - 1)
+            elif dr == 'r':  # right
+                self.check_wum(self.agent.row, self.agent.col + 1)
+        elif event.keysym == 'Return':
+            for g in self.gold:
+                if g.delete(self.window, self.agent.row, self.agent.col):
+                    self.dis_point(100)
+                self.gold = [g for g in self.gold if not g.delete(
+                    self.window, self.agent.row, self.agent.col)]
+        elif not self.agent.is_turn(event.keysym):  # walk into anther room
             self.dis_point(-10)
             if event.keysym == 'w':  # up
                 self.path(self.agent.row - 1, self.agent.col)
                 end = self.check_step(self.agent.row - 1, self.agent.col)
+
             elif event.keysym == 's':  # down
                 self.path(self.agent.row + 1, self.agent.col)
                 end = self.check_step(self.agent.row + 1, self.agent.col)
@@ -422,6 +463,89 @@ class Game(Frame):
             # Rows table
             [self.window.create_line(room_size // 2, room_size // 2 + r * room_size,
                                      room_size // 2 + room_size * 10, room_size // 2 + r * room_size) for r in range(self.size + 1)]
+            self.master.destroy()
+# auto
+
+    def collide(self, row, col):  # return value of the room
+        t = self.maze[row][col]
+
+        if 'W' in t:  # can change
+            for w in self.wumpus:
+                if w.check(row, col):
+                    return 'W'
+        if 'P' in t:
+            return 'P'
+        res = ''
+        if 'B' in t:
+            res += 'B'
+        if 'S' in t:  # can change
+            for s in self.sten:
+                if s.check(row, col):
+                    res += 'S'
+                    break
+        if 'G' in t:  # can change
+            for g in self.gold:
+                if g.check(row, col):
+                    res += 'G'
+                    break
+        return res
+
+    def run(self):
+        map = [[(0, 0, 0) for _ in range(self.size)] for _ in range(self.size)]
+        prio = [(self.agent.row, self.agent.col)]
+        dirc = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # l, r, u, d
+        path = []  # coor + action
+        # action: right, left, up, down, walk, die, gold, shoot
+        # action is the status of the wumpus at the end of the decision
+        stat = 'r'
+
+        while prio:
+            # bfs
+            r, c = prio[-1][0], prio[-1][1]
+            room = collide(r, c)
+            # 0 - pit, 1 - wumpus
+            if 'W' in room or 'P' in room:
+                path += [[(r, c), 'Die']]
+                break
+            # not out of maze
+            area = [d for d in dirc if -1 < r + d[0] <
+                    self.size and -1 < c + d[1] < self.size]
+
+            if not map[r][c][2]:  # unvisited
+                if 'B' in room:
+                    for rt, ct in area:
+                        map[r + rt][c + ct][0] += 1
+                if 'S' in room:
+                    for rt, ct in area:
+                        map[r + rt][c + ct][1] += 1
+                if 'G' in room:
+                    path += [[(r, c), 'Gold']]
+            # [coor, num of stench near]
+
+            map[r][c][2] = 1  # visited
+
+            wumpus = [[(r, c), map[r][c][1]] for c in range(self.size)
+                      for r in range(self.size) if map[r][c][1] > 0]
+            pit = [[(r, c), map[r][c][0]] for c in range(self.size)
+                   for r in range(self.size) if map[r][c][0] > 0]
+
+            # for i, (rt, ct) in enumerate(area):
+            #     if map[r - rt][c - ct][1] > 1: # 2 stench nearby
+            #         if (i == 0 and stat == 'l') or (i == 1 and stat == 'r') or (i == 2 and stat == 'u') or (i == 3 and stat == 'd'):
+            #             path += [[(r, c), 'Shoot']]
+            #         else:
+            #             if i == 0:
+            #                 path += [[(r, c), 'Left']]
+            #                 path += [[(r, c), 'Shoot']]
+            #             elif i == 1:
+            #                 path += [[(r, c), 'Right']]
+            #                 path += [[(r, c), 'Shoot']]
+            #             elif i == 2:
+            #                 path += [[(r, c), 'Up']]
+            #                 path += [[(r, c), 'Shoot']]
+            #             elif i == 3:
+            #                 path += [[(r, c), 'Down']]
+            #                 path += [[(r, c), 'Shoot']]
 
 
 load_level()
