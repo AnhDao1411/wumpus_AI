@@ -7,7 +7,7 @@ img_size = room_size // 5 * 3
 
 
 def load_level():
-    file = "../wumpus/Data/map1.txt"
+    file = "./Data/map1.txt"
     with open(file) as f:
         size = int(f.readline())
         cave = [[room for room in row.strip().split('.')]
@@ -36,7 +36,7 @@ class Wumpus:
     def __init__(self, window, pos):
         self.row, self.col = pos
         self.img = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/wumpus.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            './Img/wumpus.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
         self.signal = [(self.row - 1, self.col), (self.row + 1, self.col),
                        (self.row, self.col - 1), (self.row, self.col + 1)]
@@ -73,7 +73,7 @@ class Pit:
     def __init__(self, window, pos):
         self.row, self.col = pos
         self.img = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/hole.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            './Img/hole.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
         self.signal = [(self.row - 1, self.col), (self.row + 1, self.col),
                        (self.row, self.col - 1), (self.row, self.col + 1)]
@@ -99,7 +99,7 @@ class Stence:
     def __init__(self, window, pos):
         self.row, self.col = pos
         self.img = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/smoke.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            './Img/smoke.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
         self.temp = None
 
@@ -131,7 +131,7 @@ class Gold:
     def __init__(self, window, pos):
         self.row, self.col = pos
         self.img = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/gold.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            './Img/gold.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
         self.temp = None
 
@@ -163,7 +163,7 @@ class Breeze:
     def __init__(self, window, pos):
         self.row, self.col = pos
         self.img = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/wind.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            './Img/wind.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
 
     def display(self, window):
@@ -188,17 +188,17 @@ class Agent:
         self.limit = size
         self.window = window
         self.up1 = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/up1.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            './Img/up1.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         self.up2 = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/up2.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            './Img/up2.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         self.down1 = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/down1.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            './Img/down1.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         self.down2 = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/down2.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            './Img/down2.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         self.left = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/left.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            './Img/left.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         self.right = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/right.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            './Img/right.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         self.row, self.col = pos
         self.row_og, self.col_og = self.row, self.col
     # direction (Up, Down, Left, Right)
@@ -266,31 +266,31 @@ class Agent:
 class Game(Frame):
     def __init__(self, master=None):
         c = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_c.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            './Img/letter_c.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         e = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_e.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            './Img/letter_e.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         h = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_h.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            './Img/letter_h.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         m = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_m.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            './Img/letter_m.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         n = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_n.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            './Img/letter_n.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         o = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_o.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            './Img/letter_o.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         p = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_p.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            './Img/letter_p.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         r = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_r.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            './Img/letter_r.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         s = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_s.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            './Img/letter_s.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         t = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_t.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            './Img/letter_t.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         u = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_u.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            './Img/letter_u.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         w = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/letter_w.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            './Img/letter_w.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         self.step = ImageTk.PhotoImage(Image.open(
-            '../wumpus/Img/step.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            './Img/step.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
 # ------------------------------
         Frame.__init__(self, master)
         self.size, self.cave, wum, pit, bree, sten, gold, ag = load_level()
