@@ -1,3 +1,4 @@
+import source as src
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
@@ -7,7 +8,7 @@ img_size = room_size // 5 * 3
 
 
 def load_level():
-    file = "./Data/map1.txt"
+    file = "../wumpus/Data/map1.txt"
     with open(file) as f:
         size = int(f.readline())
         cave = [[room for room in row.strip().split('.')]
@@ -36,7 +37,7 @@ class Wumpus:
     def __init__(self, window, pos):
         self.row, self.col = pos
         self.img = ImageTk.PhotoImage(Image.open(
-            './Img/wumpus.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            '../wumpus/Img/wumpus.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
         self.signal = [(self.row - 1, self.col), (self.row + 1, self.col),
                        (self.row, self.col - 1), (self.row, self.col + 1)]
@@ -73,7 +74,7 @@ class Pit:
     def __init__(self, window, pos):
         self.row, self.col = pos
         self.img = ImageTk.PhotoImage(Image.open(
-            './Img/hole.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            '../wumpus/Img/hole.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
         self.signal = [(self.row - 1, self.col), (self.row + 1, self.col),
                        (self.row, self.col - 1), (self.row, self.col + 1)]
@@ -99,7 +100,7 @@ class Stence:
     def __init__(self, window, pos):
         self.row, self.col = pos
         self.img = ImageTk.PhotoImage(Image.open(
-            './Img/smoke.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            '../wumpus/Img/smoke.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
         self.temp = None
 
@@ -131,7 +132,7 @@ class Gold:
     def __init__(self, window, pos):
         self.row, self.col = pos
         self.img = ImageTk.PhotoImage(Image.open(
-            './Img/gold.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            '../wumpus/Img/gold.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
         self.temp = None
 
@@ -163,7 +164,7 @@ class Breeze:
     def __init__(self, window, pos):
         self.row, self.col = pos
         self.img = ImageTk.PhotoImage(Image.open(
-            './Img/wind.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            '../wumpus/Img/wind.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         window.image += [self.img]
 
     def display(self, window):
@@ -188,17 +189,17 @@ class Agent:
         self.limit = size
         self.window = window
         self.up1 = ImageTk.PhotoImage(Image.open(
-            './Img/up1.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            '../wumpus/Img/up1.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         self.up2 = ImageTk.PhotoImage(Image.open(
-            './Img/up2.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            '../wumpus/Img/up2.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         self.down1 = ImageTk.PhotoImage(Image.open(
-            './Img/down1.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            '../wumpus/Img/down1.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         self.down2 = ImageTk.PhotoImage(Image.open(
-            './Img/down2.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            '../wumpus/Img/down2.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         self.left = ImageTk.PhotoImage(Image.open(
-            './Img/left.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            '../wumpus/Img/left.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         self.right = ImageTk.PhotoImage(Image.open(
-            './Img/right.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            '../wumpus/Img/right.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
         self.row, self.col = pos
         self.row_og, self.col_og = self.row, self.col
     # direction (Up, Down, Left, Right)
@@ -266,31 +267,31 @@ class Agent:
 class Game(Frame):
     def __init__(self, master=None):
         c = ImageTk.PhotoImage(Image.open(
-            './Img/letter_c.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            '../wumpus/Img/letter_c.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         e = ImageTk.PhotoImage(Image.open(
-            './Img/letter_e.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            '../wumpus/Img/letter_e.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         h = ImageTk.PhotoImage(Image.open(
-            './Img/letter_h.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            '../wumpus/Img/letter_h.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         m = ImageTk.PhotoImage(Image.open(
-            './Img/letter_m.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            '../wumpus/Img/letter_m.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         n = ImageTk.PhotoImage(Image.open(
-            './Img/letter_n.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            '../wumpus/Img/letter_n.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         o = ImageTk.PhotoImage(Image.open(
-            './Img/letter_o.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            '../wumpus/Img/letter_o.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         p = ImageTk.PhotoImage(Image.open(
-            './Img/letter_p.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            '../wumpus/Img/letter_p.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         r = ImageTk.PhotoImage(Image.open(
-            './Img/letter_r.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            '../wumpus/Img/letter_r.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         s = ImageTk.PhotoImage(Image.open(
-            './Img/letter_s.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            '../wumpus/Img/letter_s.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         t = ImageTk.PhotoImage(Image.open(
-            './Img/letter_t.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            '../wumpus/Img/letter_t.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         u = ImageTk.PhotoImage(Image.open(
-            './Img/letter_u.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            '../wumpus/Img/letter_u.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         w = ImageTk.PhotoImage(Image.open(
-            './Img/letter_w.jpg').resize((img_size, img_size), Image.ANTIALIAS))
+            '../wumpus/Img/letter_w.jpg').resize((img_size, img_size), Image.ANTIALIAS))
         self.step = ImageTk.PhotoImage(Image.open(
-            './Img/step.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
+            '../wumpus/Img/step.png').resize((room_size - 1, room_size - 1), Image.ANTIALIAS))
 # ------------------------------
         Frame.__init__(self, master)
         self.size, self.cave, wum, pit, bree, sten, gold, ag = load_level()
@@ -360,6 +361,9 @@ class Game(Frame):
         self.path(self.agent.row, self.agent.col)
         self.agent.appear()
         self.dis_point(0)
+        self.master.update()
+
+        self.run()
 
     def dis_point(self, p):
         self.window.delete(self.t_point)
@@ -436,14 +440,14 @@ class Game(Frame):
             for g in self.gold:
                 if g.delete(self.window, self.agent.row, self.agent.col):
                     self.dis_point(100)
-                self.gold = [g for g in self.gold if not g.delete(
-                    self.window, self.agent.row, self.agent.col)]
+                    self.gold = [g for g in self.gold if not g.delete(
+                        self.window, self.agent.row, self.agent.col)]
+                    break
         elif not self.agent.is_turn(event.keysym):  # walk into anther room
             self.dis_point(-10)
             if event.keysym == 'w':  # up
                 self.path(self.agent.row - 1, self.agent.col)
                 end = self.check_step(self.agent.row - 1, self.agent.col)
-
             elif event.keysym == 's':  # down
                 self.path(self.agent.row + 1, self.agent.col)
                 end = self.check_step(self.agent.row + 1, self.agent.col)
@@ -466,86 +470,67 @@ class Game(Frame):
             self.master.destroy()
 # auto
 
-    def collide(self, row, col):  # return value of the room
-        t = self.maze[row][col]
-
-        if 'W' in t:  # can change
-            for w in self.wumpus:
-                if w.check(row, col):
-                    return 'W'
-        if 'P' in t:
-            return 'P'
-        res = ''
-        if 'B' in t:
-            res += 'B'
-        if 'S' in t:  # can change
-            for s in self.sten:
-                if s.check(row, col):
-                    res += 'S'
-                    break
-        if 'G' in t:  # can change
+    def movement(self, event):
+        time.sleep(0.07)
+        end = False
+        if event == 'space':
+            dr = self.agent.shoot()
+            self.dis_point(-100)
+            if dr == 'u':  # up
+                self.check_wum(self.agent.row - 1, self.agent.col)
+            elif dr == 'd':  # down
+                self.check_wum(self.agent.row + 1, self.agent.col)
+            elif dr == 'l':  # left
+                self.check_wum(self.agent.row, self.agent.col - 1)
+            elif dr == 'r':  # right
+                self.check_wum(self.agent.row, self.agent.col + 1)
+        elif event == 'Return':
             for g in self.gold:
-                if g.check(row, col):
-                    res += 'G'
+                print(g.row, g.col)
+                if g.delete(self.window, self.agent.row, self.agent.col):
+                    self.dis_point(100)
+                    self.gold = [g for g in self.gold if not g.delete(
+                        self.window, self.agent.row, self.agent.col)]
                     break
-        return res
+        elif not self.agent.is_turn(event):  # walk into anther room
+            self.dis_point(-10)
+            if event == 'w':  # up
+                self.path(self.agent.row - 1, self.agent.col)
+                end = self.check_step(self.agent.row - 1, self.agent.col)
+            elif event == 's':  # down
+                self.path(self.agent.row + 1, self.agent.col)
+                end = self.check_step(self.agent.row + 1, self.agent.col)
+            elif event == 'a':  # left
+                self.path(self.agent.row, self.agent.col - 1)
+                end = self.check_step(self.agent.row, self.agent.col - 1)
+            elif event == 'd':  # right
+                self.path(self.agent.row, self.agent.col + 1)
+                end = self.check_step(self.agent.row, self.agent.col + 1)
+        self.agent.direction(event)
+        if end:
+            messagebox.showerror('End Game', 'You Lost')
+            self.window.delete('all')
+            self.master.destroy()
 
     def run(self):
-        map = [[(0, 0, 0) for _ in range(self.size)] for _ in range(self.size)]
-        prio = [(self.agent.row, self.agent.col)]
-        dirc = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # l, r, u, d
-        path = []  # coor + action
-        # action: right, left, up, down, walk, die, gold, shoot
-        # action is the status of the wumpus at the end of the decision
-        stat = 'r'
-
-        while prio:
-            # bfs
-            r, c = prio[-1][0], prio[-1][1]
-            room = collide(r, c)
-            # 0 - pit, 1 - wumpus
-            if 'W' in room or 'P' in room:
-                path += [[(r, c), 'Die']]
+        dirc = {(-1, 0): 'w', (1, 0): 's', (0, -1): 'a', (0, 1): 'd', (0, 0): 'stop'}
+        path, score, pick, shot = src.Game("../wumpus/Data/map1.txt")
+        print(shot)
+        for p in path:
+            sym = dirc[(p[0] - self.agent.row, p[1] - self.agent.col)]
+            if sym == 'stop':
                 break
-            # not out of maze
-            area = [d for d in dirc if -1 < r + d[0] <
-                    self.size and -1 < c + d[1] < self.size]
 
-            if not map[r][c][2]:  # unvisited
-                if 'B' in room:
-                    for rt, ct in area:
-                        map[r + rt][c + ct][0] += 1
-                if 'S' in room:
-                    for rt, ct in area:
-                        map[r + rt][c + ct][1] += 1
-                if 'G' in room:
-                    path += [[(r, c), 'Gold']]
-            # [coor, num of stench near]
+            if (self.agent.row, self.agent.col) in pick:
+                self.movement('Return')
+                self.master.update()
 
-            map[r][c][2] = 1  # visited
+            if self.agent.is_turn(sym):
+                self.movement(sym)
+                self.master.update()
 
-            wumpus = [[(r, c), map[r][c][1]] for c in range(self.size)
-                      for r in range(self.size) if map[r][c][1] > 0]
-            pit = [[(r, c), map[r][c][0]] for c in range(self.size)
-                   for r in range(self.size) if map[r][c][0] > 0]
-
-            # for i, (rt, ct) in enumerate(area):
-            #     if map[r - rt][c - ct][1] > 1: # 2 stench nearby
-            #         if (i == 0 and stat == 'l') or (i == 1 and stat == 'r') or (i == 2 and stat == 'u') or (i == 3 and stat == 'd'):
-            #             path += [[(r, c), 'Shoot']]
-            #         else:
-            #             if i == 0:
-            #                 path += [[(r, c), 'Left']]
-            #                 path += [[(r, c), 'Shoot']]
-            #             elif i == 1:
-            #                 path += [[(r, c), 'Right']]
-            #                 path += [[(r, c), 'Shoot']]
-            #             elif i == 2:
-            #                 path += [[(r, c), 'Up']]
-            #                 path += [[(r, c), 'Shoot']]
-            #             elif i == 3:
-            #                 path += [[(r, c), 'Down']]
-            #                 path += [[(r, c), 'Shoot']]
+            self.movement(sym)
+            self.master.update()
 
 
 load_level()
