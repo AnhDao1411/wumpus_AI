@@ -325,6 +325,21 @@ def Game(path):
     return Agent_path, Score, Pick_Gold, Shot_Wumpus
 
 
+def print_percept(size, oke):
+    W, P, V = [], [], []
+
+    for i in range(size):
+        for j in range(size):
+            if Wumpus[i][j] and (i, j) not in Visited:
+                W += [(i, j)]
+            if Pit[i][j]:
+                P += [(i, j)]
+
+    print('Wumpus:', W)
+    print('Pit:', P)
+    print('Oke:', oke)
+
+
 def Wumpus_Agent(init_pos, size, cave, Pick_Gold, Shot_Wumpus, Score):
     Agent_path = []
     Agent_pos = init_pos
@@ -351,5 +366,6 @@ def Wumpus_Agent(init_pos, size, cave, Pick_Gold, Shot_Wumpus, Score):
         Agent_pos = new_pos
         Score.append(score_room)
 
+        print_percept(size, Oke_pos)
 
 # Game('./Data/map1.txt')

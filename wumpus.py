@@ -5,7 +5,7 @@ from PIL import Image, ImageTk
 import time
 room_size = 60
 img_size = room_size // 5 * 3
-file = '../wumpus/Data/map5.txt'
+file = '../wumpus/Data/map2.txt'
 
 
 def load_level():
@@ -354,7 +354,7 @@ class Game(Frame):
         # Dont know yet
         self.window.pack()
         self.master.mainloop()
-# end init5
+# end init
 
     def play(self):
         self.path(self.agent.row, self.agent.col)
@@ -486,8 +486,9 @@ class Game(Frame):
 # auto
 
     def movement(self, event):
-        time.sleep(0.15)
+        time.sleep(0.07)
         end = False
+        win = False
         if event == 'space':
             dr = self.agent.shoot()
             self.dis_point(-100)
@@ -529,6 +530,12 @@ class Game(Frame):
             room_size * 13, room_size * 8, text='Number of Gold: ' + str(len(self.gold)))
         self.nW = self.window.create_text(
             room_size * 13, room_size * 8 + room_size / 2, text='Number of Wumpus: ' + str(len(self.wumpus)))
+
+        if not self.gold and not self.wumpus:
+            messagebox.showerror('End Game', 'You Won')
+            self.window.delete('all')
+            self.master.destroy()
+
         if end:
             messagebox.showerror('End Game', 'You Lost')
             self.window.delete('all')
