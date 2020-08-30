@@ -345,27 +345,6 @@ def Wumpus_Agent(init_pos, size, cave, Pick_Gold, Shot_Wumpus, Score):
             Pick_Gold.append(new_pos)
             score_room += 100
             cave[x][y] = cave[x][y].replace('G', '')
-
-        if x-1 >= 0:
-            if Wumpus[x-1][y] > 1:
-                score_room -= 100
-                Shot_Wumpus.append(((x, y), (x-1, y)))
-                Is_Wumpus_dead((x-1, y), size, cave)
-        if x+1 <= size-1:
-            if Wumpus[x+1][y] > 1:
-                score_room -= 100
-                Shot_Wumpus.append(((x, y), (x+1, y)))
-                Is_Wumpus_dead((x+1, y), size, cave)
-        if y-1 >= 0:
-            if Wumpus[x][y-1] > 1:
-                score_room -= 100
-                Shot_Wumpus.append(((x, y), (x, y-1)))
-                Is_Wumpus_dead((x, y-1), size, cave)
-        if y+1 <= size-1:
-            if Wumpus[x][y+1] > 1:
-                score_room -= 100
-                Shot_Wumpus.append(((x, y), (x, y+1)))
-                Is_Wumpus_dead((x, y+1), size, cave)
         path = BFS(Agent_pos, new_pos, size, cave)
         for i in range(1, len(path)):
             Agent_path.append(path[i])
