@@ -5,10 +5,10 @@ from PIL import Image, ImageTk
 import time
 room_size = 60
 img_size = room_size // 5 * 3
+file = '../wumpus/Data/map5.txt'
 
 
 def load_level():
-    file = "../wumpus/Data/map1.txt"
     with open(file) as f:
         size = int(f.readline())
         cave = [[room for room in row.strip().split('.')]
@@ -345,10 +345,16 @@ class Game(Frame):
                           text='Play as Machine', command=self.auto)
         auto_but.place(x=room_size * 12, y=room_size * 7)
 
+        self.nG = self.window.create_text(
+            room_size * 13, room_size * 8, text='Number of Gold: ' + str(len(self.gold)))
+
+        self.nW = self.window.create_text(
+            room_size * 13, room_size * 8 + room_size / 2, text='Number of Wumpus: ' + str(len(self.wumpus)))
+
         # Dont know yet
         self.window.pack()
         self.master.mainloop()
-# end init
+# end init5
 
     def play(self):
         self.path(self.agent.row, self.agent.col)
@@ -458,6 +464,15 @@ class Game(Frame):
                 self.path(self.agent.row, self.agent.col + 1)
                 end = self.check_step(self.agent.row, self.agent.col + 1)
         self.agent.direction(event.keysym)
+
+        self.window.delete(self.nG)
+        self.window.delete(self.nW)
+
+        self.nG = self.window.create_text(
+            room_size * 13, room_size * 8, text='Number of Gold: ' + str(len(self.gold)))
+        self.nW = self.window.create_text(
+            room_size * 13, room_size * 8 + room_size / 2, text='Number of Wumpus: ' + str(len(self.wumpus)))
+
         if end:
             messagebox.showerror('End Game', 'You Lost')
             self.window.delete('all')
@@ -471,7 +486,7 @@ class Game(Frame):
 # auto
 
     def movement(self, event):
-        time.sleep(0.07)
+        time.sleep(0.15)
         end = False
         if event == 'space':
             dr = self.agent.shoot()
@@ -486,7 +501,6 @@ class Game(Frame):
                 self.check_wum(self.agent.row, self.agent.col + 1)
         elif event == 'Return':
             for g in self.gold:
-                print(g.row, g.col)
                 if g.delete(self.window, self.agent.row, self.agent.col):
                     self.dis_point(100)
                     self.gold = [g for g in self.gold if not g.delete(
@@ -507,30 +521,49 @@ class Game(Frame):
                 self.path(self.agent.row, self.agent.col + 1)
                 end = self.check_step(self.agent.row, self.agent.col + 1)
         self.agent.direction(event)
+
+        self.window.delete(self.nG)
+        self.window.delete(self.nW)
+
+        self.nG = self.window.create_text(
+            room_size * 13, room_size * 8, text='Number of Gold: ' + str(len(self.gold)))
+        self.nW = self.window.create_text(
+            room_size * 13, room_size * 8 + room_size / 2, text='Number of Wumpus: ' + str(len(self.wumpus)))
         if end:
             messagebox.showerror('End Game', 'You Lost')
             self.window.delete('all')
             self.master.destroy()
+        return end
 
     def run(self):
-        dirc = {(-1, 0): 'w', (1, 0): 's', (0, -1): 'a', (0, 1): 'd', (0, 0): 'stop'}
-        path, score, pick, shot = src.Game("../wumpus/Data/map1.txt")
-        print(shot)
+        dirc = {(-1, 0): 'w', (1, 0): 's', (0, -1): 'a',
+                (0, 1): 'd', (0, 0): 'stop'}
+        path, score, pick, shot = src.Game(file)
         for p in path:
             sym = dirc[(p[0] - self.agent.row, p[1] - self.agent.col)]
             if sym == 'stop':
+                self.dis_point(10)
                 break
 
             if (self.agent.row, self.agent.col) in pick:
                 self.movement('Return')
                 self.master.update()
 
+            for s in shot:
+                if (self.agent.row, self.agent.col) == s[0]:
+                    if self.agent.is_turn(dirc[(s[1][0] - self.agent.row, s[1][1] - self.agent.col)]):
+                        self.movement(
+                            dirc[(s[1][0] - self.agent.row, s[1][1] - self.agent.col)])
+                        self.master.update()
+                    self.movement('space')
+                    self.master.update()
+
             if self.agent.is_turn(sym):
                 self.movement(sym)
                 self.master.update()
 
-            self.movement(sym)
-            self.master.update()
+            if not self.movement(sym):
+                self.master.update()
 
 
 load_level()
