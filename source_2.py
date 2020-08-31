@@ -8,6 +8,7 @@ Oke = []
 Visited = []
 
 clauses = []
+count_clause = 0
 
 def load_level(path):
     file = path
@@ -216,17 +217,21 @@ def create_clauses(breeze,stench,pos,size):
     y=pos[1]
     if not breeze:
         if (x-1>=0) and (not Visited[x-1][y]):
-            clauses.append(['-P',x-1,y])
-            print('-P[ ',x-1,' ][ ',y,' ]')
+            count_clause=len(clauses)
+            clauses.append(['-P',x-1,y]) 
+            print(count_clause,' : -P[ ',x-1,' ][ ',y,' ]')
         if (x+1 <= size-1) and (not Visited[x+1][y]):
+            count_clause=len(clauses)
             clauses.append(['-P',x+1,y])
-            print('-P[ ',x+1,' ][ ',y,' ]')
+            print(count_clause,' : -P[ ',x+1,' ][ ',y,' ]')
         if (y-1>=0) and (not Visited[x][y-1]):
+            count_clause=len(clauses)
             clauses.append(['-P',x,y-1])
-            print('-P[ ',x,' ][ ',y-1,' ]')
+            print(count_clause,' : -P[ ',x,' ][ ',y-1,' ]')
         if (y+1 <= size-1) and (not Visited[x][y+1]):
+            count_clause=len(clauses)
             clauses.append(['-P',x,y+1])
-            print('-P[ ',x,' ][ ',y+1,' ]')
+            print(count_clause,' : -P[ ',x,' ][ ',y+1,' ]')
     else:
         temp = []
         if (x-1>=0) and (not Visited[x-1][y]):
@@ -237,7 +242,10 @@ def create_clauses(breeze,stench,pos,size):
             temp.append(['P',x,y-1])
         if (y+1 <= size-1) and (not Visited[x][y+1]):
             temp.append(['P',x,y+1])
-        clauses.append(temp)
+        if temp:
+            count_clause=len(clauses)
+            clauses.append(temp)
+            print(count_clause,' : ',end = " ")
         for i,ele in enumerate(temp):
             if i < len(temp)-1:
                 print('P[ ',ele[1],' ][ ',ele[2],' ] OR',end =" ")
@@ -246,17 +254,21 @@ def create_clauses(breeze,stench,pos,size):
 
     if not stench:
         if (x-1>=0) and (not Visited[x-1][y]):
+            count_clause=len(clauses)
             clauses.append(['-W',x-1,y])
-            print('-W[ ',x-1,' ][ ',y,' ]')
+            print(count_clause,' : -W[ ',x-1,' ][ ',y,' ]')
         if (x+1 <= size-1) and (not Visited[x+1][y]):
+            count_clause=len(clauses)
             clauses.append(['-W',x+1,y])
-            print('-W[ ',x+1,' ][ ',y,' ]')
+            print(count_clause,' : -W[ ',x+1,' ][ ',y,' ]')
         if (y-1>=0) and (not Visited[x][y-1]):
+            count_clause=len(clauses)
             clauses.append(['-W',x,y-1])
-            print('-W[ ',x,' ][ ',y-1,' ]')
+            print(count_clause,' : -W[ ',x,' ][ ',y-1,' ]')
         if (y+1 <= size-1) and (not Visited[x][y+1]):
+            count_clause=len(clauses)
             clauses.append(['-W',x,y+1])
-            print('-W[ ',x,' ][ ',y+1,' ]')
+            print(count_clause,' : -W[ ',x,' ][ ',y+1,' ]')
     else:
         temp = []
         if (x-1>=0) and (not Visited[x-1][y]):
@@ -267,7 +279,10 @@ def create_clauses(breeze,stench,pos,size):
             temp.append(['W',x,y-1])
         if (y+1 <= size-1) and (not Visited[x][y+1]):
             temp.append(['W',x,y+1])
-        clauses.append(temp)
+        if temp:
+            count_clause=len(clauses)
+            clauses.append(temp)
+            print(count_clause,' : ',end = " ")
         for i,ele in enumerate(temp):
             if i < len(temp)-1:
                 print('W[ ',ele[1],' ][ ',ele[2],' ] OR',end =" ")
@@ -279,7 +294,9 @@ def create_clauses(breeze,stench,pos,size):
 def Prove_Oke(pos):
     if (['-P',pos[0],pos[1]] in clauses) and (['-W',pos[0],pos[1]] in clauses):
         print('-P[ ',pos[0],' ][ ',pos[1],' ] AND -W[ ',pos[0],' ][ ',pos[1],' ] -> OKE[ ',pos[0],' ][ ',pos[1],' ]')
-        
+        print(clauses.index(['-P',pos[0],pos[1]]),'-P[ ',pos[0],' ][ ',pos[1],' ]')
+        print(clauses.index(['-W',pos[0],pos[1]]),'-W[ ',pos[0],' ][ ',pos[1],' ]')
+        print('Proved : OKE[ ',pos[0],' ][ ',pos[1],' ]')
 def take_percept(pos, size, shot, cave):
     x = pos[0]
     y = pos[1]
